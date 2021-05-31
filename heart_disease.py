@@ -24,7 +24,7 @@ class Logistic_Regression() :
     
     #Gradient descent function
     def gradientDescent(self, hyp):
-        # calculate gradients        
+        # calculate derivatives        
         dw = 1 / self.samples * np.dot(self.X.T,hyp-self.Y.T)
         db = 1 / self.samples * np.sum(hyp-self.Y.T) 
           
