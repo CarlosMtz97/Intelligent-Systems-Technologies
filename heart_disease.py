@@ -61,7 +61,7 @@ class Logistic_Regression() :
 #Dataset            
 path = 'D:\Repos\Intelligent-Systems-Technologies\heart.csv';
 df = pd.read_csv(path)
-x = df[['sex','cp','fbs','exang','oldpeak','slope','ca','thal']]
+x = df[['sex','cp','exang','oldpeak','slope','ca','thal']]
 y = df.target.values
 
 X_train, X_test, Y_train, Y_test = train_test_split(x, y,test_size=0.20, random_state=5)
@@ -81,4 +81,19 @@ for i in range( np.size( Y_pred ) ) :
         accuracy += 1
 print(f'Accuracy :  { accuracy / len(Y_pred) * 100} ')
 
-    
+while True:
+    sex = input('Type 0 for female or 1 for male : ')
+    cp = input('The chest pain experienced (Value 1: typical angina, Value 2: atypical angina, Value 3: non-anginal pain, Value 4: asymptomatic) : ')
+    exang = input('Exercise induced angina (1 = yes, 0 no) :')
+    oldpeak = input('ST depression induced by exercise relative to rest (Value between 0 - 6.2) : ')
+    slope = input(' Enter the slope of the peak exercise ST segment (Value 1: upsloping, Value 2: flat, Value 3: downsloping) : ')
+    ca = input('Enter the numer of major vessels (0-3) : ')
+    thal = input('Thalium stress test result (3 = normal; 6 = fixed defect; 7 = reversable defect) : ')
+
+    q = pd.DataFrame(np.array([[ int(sex),int(cp),int(exang),float(oldpeak),int(slope),int(ca),int(thal)]]),columns=['sex','cp','exang','oldpeak','slope','ca','thal'])
+    print(q)
+    heart = model.predict(q)
+    if heart[0] == 1:
+        print('High risk of heart disease')
+    else:
+        print('Low risk of heart disease') 
