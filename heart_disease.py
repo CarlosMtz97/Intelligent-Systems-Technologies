@@ -1,9 +1,8 @@
-from itertools import accumulate
-from os import path
 import numpy as np 
 import pandas as pd
 import seaborn as sns
 from sklearn.model_selection import train_test_split 
+import matplotlib.pyplot as plt
 
 
 #Logistic Regression
@@ -23,7 +22,7 @@ class Logistic_Regression() :
     def hypothesis(self, X):
         return self.sigmoid(X.dot(self.weights) + self.bias) 
     
-    #Gradient descent
+    #Gradient descent function
     def gradientDescent(self, hyp):
         # calculate gradients        
         dw = 1 / self.samples * np.dot(self.X.T,hyp-self.Y.T)
@@ -39,37 +38,42 @@ class Logistic_Regression() :
     def train(self, X, Y):     
         self.X = X        
         self.Y = Y
-          
-        #Gradient descent function          
+        cost_list = [] 
         for i in range( self.epochs + 1 ) : 
+            #Hypothesis
             hyp = self.hypothesis(self.X)
             
             #Cost function - Cross entropy
             cost = -1 / self.samples * np.sum(self.Y * np.log(hyp) + (1-self.Y) * np.log(1 - hyp))    
 
+            #Gradient descent
             self.gradientDescent(hyp) 
-            
-            if i % 1000 == 0:
-                print(f'Cost after {i} epochs : {cost}')           
-        return self
+
+            cost_list.append(cost)
+
+        return cost_list
     
     def predict(self, X):
         hyp = self.hypothesis(X)        
         predict = np.where(hyp > 0.5, 1, 0)        
         return predict
 
-            
+#Dataset            
 path = 'D:\Repos\Intelligent-Systems-Technologies\heart.csv';
 df = pd.read_csv(path)
 x = df[['sex','cp','fbs','exang','oldpeak','slope','ca','thal']]
 y = df.target.values
-X_train, X_test, Y_train, Y_test = train_test_split(x, y,test_size=0.20, random_state=42)
-lr=0.1
-epochs = 3000
-logreg = Logistic_Regression( X_train, lr,epochs)
-logreg.train(X_train,Y_train)
 
-Y_pred = logreg.predict( X_test ) 
+X_train, X_test, Y_train, Y_test = train_test_split(x, y,test_size=0.20, random_state=5)
+lr=0.001
+epochs = 3000
+model = Logistic_Regression( X_train, lr,epochs)
+cost = model.train(X_train,Y_train)
+
+plt.plot(np.arange(epochs + 1), cost)
+plt.show()
+
+Y_pred = model.predict( X_test ) 
     
 accuracy = 0    
 for i in range( np.size( Y_pred ) ) :  
